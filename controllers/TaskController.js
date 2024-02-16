@@ -3,63 +3,72 @@ const Task = require('../models/Task')
 const TaskController = {
   async create (req, res) {
     try {
-      const task = await Task.create({...req.body, completed: false}) 
-      res.status(201).json(task)
+        const task = await Task.create({...req.body, completed: false})
+        res.status(201).send(task)
     } catch (error) {
       console.log(error)
     }
   },
-  async getAll(req, res) {
+  async getAll (req, res) {
     try {
-      const tasks = await Task.find()
-      res.json(tasks)
+        const task = await Task.find();
+        res.json(task);
     } catch (error) {
-      console.log(error)
+        console.log(error)
     }
   },
-  async getId (req, res) {
+  async getByID (req, res) {
     try {
-      const task = await Task.findById(req.params._id)
+      const id = req.params._id;
+      const task = await Task.findById(id);
       res.json(task)
     } catch (error) {
-      
+        console.log(error)
     }
   },
-  async updateCompleted (req, res) {
+  async updateCompleted(req, res) {
     try {
-      const idTask = req.params._id
-      const task = await Task.findByIdAndUpdate(
-        idTask, {
+      const id = req.params._id;
+      const udpatedTask = await Task.findByIdAndUpdate(
+        id, {
           completed: true
         }, {new: true}
       )
-      res.json(task)
+      if(!udpatedTask) {
+        return res.status(404).json({mensaje: 'Task id not found'})
+      } 
+      res.json(udpatedTask)
     } catch (error) {
-      
+      console.log(error)
     }
   },
-  async updateName(req, res){
+  async updateByName(req, res) {
     try {
       const id = req.params._id
       const title = req.body.title
-      const task = await Task.findByIdAndUpdate(
+      const updateTitleTask = await Task.findByIdAndUpdate(
         id, {
           title
         }, {new: true}
       )
-      res.json(task)
+      res.json(updateTitleTask)
     } catch (error) {
+      console.log(error)
     }
   },
-  async deleteId(req, res) {
+  async deleteTask (req, res) {
     try {
       const id = req.params._id
-      const task = await Task.findByIdAndDelete(id)
-      res.json({mensaje: "task delete", task})
+      const deletedTask = await Task.findByIdAndDelete(id)
+      if (!deletedTask) {
+        return res.status(404).json({message: "Task with that id not found"})
+      }  
+      res.json({message: "Task deleted successfully", deletedTask})
     } catch (error) {
-      
+        console.log(error)
     }
-  }
+}
+
 }
 
 module.exports = TaskController
