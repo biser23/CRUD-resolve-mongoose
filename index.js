@@ -1,7 +1,9 @@
 const express = require('express')
 const dbConnection = require('./config/config')
 const app = express()
-const PORT = 3000
+require('dotenv').config()
+
+const PORT = process.env.PORT || 3000
 const routes = require('./routes/tasks');
 const swaggerUI = require('swagger-ui-express')
 const docs = require('./docs/index')
